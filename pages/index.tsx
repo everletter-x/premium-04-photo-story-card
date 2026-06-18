@@ -1,0 +1,269 @@
+import { useState, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+interface Config {
+  recipient: string;
+  sender: string;
+  title: string;
+  message: string;
+  photos: string[];
+  theme: string;
+  music: string;
+  musicTitle: string;
+  template: string;
+  captions: string[];
+  closing: string;
+}
+
+function useConfigLoader<T>(path: string) {
+  const [config, setConfig] = useState<T | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+  useEffect(() => {
+    fetch(path)
+      .then((r) => r.json())
+      .then((d) => {
+        setConfig(d);
+        setLoading(false);
+      })
+      .catch((e) => {
+        setError(e);
+        setLoading(false);
+      });
+  }, [path]);
+  return { config, loading, error };
+}
+
+export default function Home() {
+  const { config, loading, error } = useConfigLoader<Config>('/config.json');
+  const [currentPhoto, setCurrentPhoto] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const nextPhoto = useCallback(() => {
+    if (config) {
+      setCurrentPhoto((prev) => (prev + 1) % config.photos.length);
+    }
+  }, [config]);
+
+  const prevPhoto = useCallback(() => {
+    if (config) {
+      setCurrentPhoto((prev) => (prev - 1 + config.photos.length) % config.photos.length);
+    }
+  }, [config]);
+
+  useEffect(() => {
+    if (loading || !config) return;
+    const interval = setInterval(() => {
+      nextPhoto();
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [loading, config, nextPhoto]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-elegant-white">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+          className="w-12 h-12 border-4 border-rose border-t-transparent rounded-full"
+        />
+      </div>
+    );
+  }
+
+  if (error || !config) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-elegant-white">
+        <p className="text-rose text-lg">Gagal memuat konfigurasi</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-elegant-white overflow-x-hidden">
+      {/* Hero Section */}
+      <section className="relative min-h-screen flex items-center justify-center px-4 py-16">
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-20 left-10 w-64 h-64 bg-pink-soft/40 rounded-full blur-3xl" />
+          <div className="absolute bottom-20 right-10 w-48 h-48 bg-lavender/30 rounded-full blur-3xl" />
+        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: 'easeOut' }}
+          className="relative z-10 text-center max-w-2xl mx-auto"
+        >
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="text-rose text-sm uppercase tracking-[0.3em] mb-6"
+          >
+            Untuk {config.recipient}, dari {config.sender}
+          </motion.p>
+          <h1 className="text-5xl md:text-7xl font-bold text-dark-luxury mb-8 leading-tight">
+            {config.title}
+          </h1>
+          <div className="w-24 h-1 bg-gradient-to-r from-rose to-lavender mx-auto rounded-full" />
+        </motion.div>
+      </section>
+
+      {/* Photo Carousel Section */}
+      <section className="py-16 px-4">
+        <div className="max-w-6xl mx-auto">
+          {/* Carousel */}
+          <div className="relative">
+            <div className="overflow-hidden rounded-3xl">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentPhoto}
+                  initial={{ opacity: 0, scale: 1.05 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.5 }}
+                  className="relative aspect-[4/3] md:aspect-[16/9] bg-gradient-to-br from-pink-soft to-lavender/30 rounded-3xl flex items-center justify-center"
+                >
+                  <div className="text-center">
+                    <div className="w-32 h-32 mx-auto mb-6 rounded-2xl bg-white/50 backdrop-blur-sm flex items-center justify-center">
+                      <svg className="w-16 h-16 text-rose/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <p className="text-dark-luxury/40 text-sm">{config.photos[currentPhoto]}</p>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+
+            {/* Navigation Arrows */}
+            <button
+              onClick={prevPhoto}
+              className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-colors"
+            >
+              <svg className="w-5 h-5 text-dark-luxury" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            <button
+              onClick={nextPhoto}
+              className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-colors"
+            >
+              <svg className="w-5 h-5 text-dark-luxury" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Caption */}
+          <motion.div
+            key={`caption-${currentPhoto}`}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="text-center mt-8"
+          >
+            <p className="text-2xl md:text-3xl font-medium text-dark-luxury">
+              {config.captions[currentPhoto]}
+            </p>
+          </motion.div>
+
+          {/* Dot Navigation */}
+          <div className="flex justify-center gap-3 mt-8">
+            {config.photos.map((_: string, index: number) => (
+              <button
+                key={index}
+                onClick={() => setCurrentPhoto(index)}
+                className={`transition-all duration-300 rounded-full ${
+                  currentPhoto === index
+                    ? 'w-10 h-3 bg-rose'
+                    : 'w-3 h-3 bg-dark-luxury/20 hover:bg-dark-luxury/40'
+                }`}
+              />
+            ))}
+          </div>
+
+          {/* Photo Grid Preview (Desktop) */}
+          <div className="hidden md:grid grid-cols-3 gap-4 mt-12">
+            {config.photos.map((photo: string, index: number) => (
+              <motion.button
+                key={index}
+                onClick={() => setCurrentPhoto(index)}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                className={`relative aspect-square rounded-2xl overflow-hidden transition-all duration-300 ${
+                  currentPhoto === index
+                    ? 'ring-4 ring-rose shadow-lg'
+                    : 'opacity-60 hover:opacity-100'
+                }`}
+              >
+                <div className="w-full h-full bg-gradient-to-br from-pink-soft to-lavender/30 flex items-center justify-center">
+                  <svg className="w-12 h-12 text-rose/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/60 to-transparent p-3">
+                  <p className="text-white text-sm font-medium truncate">{config.captions[index]}</p>
+                </div>
+              </motion.button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Final Wish Section */}
+      <section className="py-20 px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-100px' }}
+          transition={{ duration: 0.8 }}
+          className="max-w-2xl mx-auto text-center"
+        >
+          <div className="relative inline-block mb-10">
+            <div className="absolute -inset-4 bg-gradient-to-r from-rose/20 to-lavender/20 blur-xl rounded-full" />
+            <div className="relative w-20 h-20 mx-auto bg-gradient-to-br from-rose to-lavender rounded-full flex items-center justify-center">
+              <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            </div>
+          </div>
+          <p className="text-lg md:text-xl text-dark-luxury/80 leading-relaxed whitespace-pre-line mb-8">
+            {config.message}
+          </p>
+          <div className="w-16 h-px bg-gradient-to-r from-transparent via-rose to-transparent mx-auto mb-8" />
+          <p className="text-xl md:text-2xl font-medium text-dark-luxury italic">
+            {config.closing}
+          </p>
+        </motion.div>
+      </section>
+
+      {/* Music Floating Button */}
+      <div className="fixed bottom-6 right-6 z-50">
+        <motion.button
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={() => setIsPlaying(!isPlaying)}
+          className="w-14 h-14 bg-gradient-to-br from-rose to-lavender rounded-full shadow-lg flex items-center justify-center text-white"
+        >
+          {isPlaying ? (
+            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
+            </svg>
+          ) : (
+            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
+            </svg>
+          )}
+        </motion.button>
+        <div className="absolute -top-8 right-0 bg-dark-luxury/80 text-white text-xs px-2 py-1 rounded whitespace-nowrap">
+          {config.musicTitle}
+        </div>
+      </div>
+
+      {/* Footer */}
+      <footer className="py-8 text-center text-dark-luxury/40 text-sm">
+        <p>Made with love by EverLetter</p>
+      </footer>
+    </div>
+  );
+}
