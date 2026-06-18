@@ -349,6 +349,23 @@ export default function Home() {
           </div>
         )}
 
+        {/* Pricing Section */}
+        <section className="py-16 px-6 bg-gradient-to-b from-pink-soft to-warm-white">
+          <div className="max-w-md mx-auto text-center">
+            <p className="text-dark-luxury/60 mb-2">Mulai dari</p>
+            <p className="text-5xl font-bold text-dark-luxury mb-4">Rp 80K</p>
+            <p className="text-dark-luxury/50 text-sm mb-6">Harga premium untuk pengalaman tak terlupakan</p>
+            <a
+              href="https://wa.me/6282320114535?text=Halo%2C%20saya%20tertarik%20dengan%20EverLetter%20HeartVerse!"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block bg-dark-luxury text-warm-white px-8 py-4 rounded-full font-bold text-lg hover:bg-dark-luxury/90 transition-colors"
+            >
+              Pesan via WhatsApp
+            </a>
+          </div>
+        </section>
+
         {/* Footer */}
         <footer className="py-8 text-center text-dark-luxury/40 text-sm">
           <p>Dibuat dengan cinta oleh EverLetter</p>
