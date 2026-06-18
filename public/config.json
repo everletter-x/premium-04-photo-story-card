@@ -9,5 +9,18 @@
   "musicTitle": "",
   "template": "premium-04",
   "captions": [],
-  "closing": ""
+  "closing": "",
+  "_example": {
+    "recipient": "Kamu",
+    "sender": "Aku",
+    "title": "Cerita Kita Dalam Satu Foto",
+    "message": "Setiap foto ini adalah bukti nyata bahwa cinta kita nyata, indah, dan layak untuk dikenang selamanya. Mari kita abadikan setiap momen bersama.",
+    "captions": [
+      "Saat pertama kali kita bertemu",
+      "Senyum yang mencuri hatiku",
+      "Tawa yang tak pernah terlupakan",
+      "Cinta yang abadi dalam setiap frame"
+    ],
+    "closing": "Setiap foto, setiap momen, setiap detik bersamamu adalah harta terindahku."
+  }
 }
