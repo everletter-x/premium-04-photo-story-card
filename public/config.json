@@ -1,13 +1,13 @@
 {
-  "recipient": "Nabila",
-  "sender": "Rizky",
-  "title": "Setiap Foto Punya Cerita",
-  "message": "Dan setiap cerita selalu kembali ke kamu.\n\nTerima kasih sudah jadi bagian dari kenanganku.",
-  "photos": ["photo1.jpg", "photo2.jpg", "photo3.jpg"],
+  "recipient": "",
+  "sender": "",
+  "title": "",
+  "message": "",
+  "photos": [],
   "theme": "pink",
-  "music": "song.mp3",
-  "musicTitle": "我们的歌",
+  "music": "",
+  "musicTitle": "",
   "template": "premium-04",
-  "captions": ["Momen pertama", "Senyum yang tak terlupakan", "Selamanya bersama"],
-  "closing": "Terima kasih sudah menjadi bagian dari hidupku, Nabila."
+  "captions": [],
+  "closing": ""
 }
