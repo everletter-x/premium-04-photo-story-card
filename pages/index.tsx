@@ -310,7 +310,7 @@ export default function Home() {
             className="max-w-md mx-auto text-center"
           >
             <a
-              href="https://wa.me/6281234567890?text=Halo,%20saya%20ingin%20memesan%20EverLetter"
+              href="https://wa.me/6282320114535?text=Halo,%20saya%20ingin%20memesan%20EverLetter"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-3 bg-green-500 text-white px-8 py-4 rounded-full font-medium hover:bg-green-600 transition-colors shadow-lg"
