@@ -23,20 +23,22 @@ export default function Home() {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
+  const [toast, setToast] = useState<string | null>(null);
+
   const nextPhoto = useCallback(() => {
-    if (config) {
+    if (config?.photos?.length) {
       setCurrentPhoto((prev) => (prev + 1) % config.photos.length);
     }
   }, [config]);
 
   const prevPhoto = useCallback(() => {
-    if (config) {
+    if (config?.photos?.length) {
       setCurrentPhoto((prev) => (prev - 1 + config.photos.length) % config.photos.length);
     }
   }, [config]);
 
   useEffect(() => {
-    if (loading || !config) return;
+    if (loading || !config?.photos?.length) return;
     const interval = setInterval(() => {
       nextPhoto();
     }, 5000);
@@ -44,10 +46,21 @@ export default function Home() {
   }, [loading, config, nextPhoto]);
 
   useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') prevPhoto();
+      if (e.key === 'ArrowRight') nextPhoto();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [nextPhoto, prevPhoto]);
+
+  useEffect(() => {
     if (config?.music) {
       audioRef.current = new Audio(`/${config.music}`);
       audioRef.current.loop = true;
       audioRef.current.volume = 0.3;
+      audioRef.current.addEventListener('ended', () => setIsPlaying(false));
+      audioRef.current.addEventListener('error', () => setIsPlaying(false));
     }
     return () => {
       if (audioRef.current) {
@@ -156,6 +169,7 @@ export default function Home() {
                         src={`/${config.photos[currentPhoto]}`}
                         alt={config.captions[currentPhoto] || `Foto ${currentPhoto + 1}`}
                         className="w-full h-full object-cover"
+                        loading="lazy"
                       />
                     ) : (
                       <div className="text-center">
@@ -165,7 +179,9 @@ export default function Home() {
                           </svg>
                         </div>
                       </div>
-                    )}
+        )}
+
+        {/* Share Button */}
                   </motion.div>
                 </AnimatePresence>
               </div>
@@ -211,6 +227,7 @@ export default function Home() {
                   key={index}
                   onClick={() => setCurrentPhoto(index)}
                   aria-label={`Foto ${index + 1}`}
+                  aria-current={currentPhoto === index ? 'true' : undefined}
                   className={`transition-all duration-300 rounded-full ${
                     currentPhoto === index
                       ? 'w-10 h-3 bg-rose'
@@ -239,6 +256,7 @@ export default function Home() {
                       src={`/${photo}`}
                       alt={config.captions[index] || `Foto ${index + 1}`}
                       className="w-full h-full object-cover"
+                      loading="lazy"
                     />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-pink-soft to-lavender/30 flex items-center justify-center">
@@ -331,22 +349,7 @@ export default function Home() {
           </div>
         )}
 
-        {/* Pricing Section */}
-        <section className="py-16 px-6 bg-gradient-to-b from-pink-soft to-warm-white">
-          <div className="max-w-md mx-auto text-center">
-            <p className="text-dark-luxury/60 mb-2">Mulai dari</p>
-            <p className="text-5xl font-bold text-dark-luxury mb-4">Rp 80K</p>
-            <p className="text-dark-luxury/50 text-sm mb-6">Harga premium untuk pengalaman tak terlupakan</p>
-            <a
-              href="https://wa.me/6282320114535?text=Halo%2C%20saya%20tertarik%20dengan%20EverLetter%20HeartVerse!"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block bg-dark-luxury text-warm-white px-8 py-4 rounded-full font-bold text-lg hover:bg-dark-luxury/90 transition-colors"
-            >
-              Pesan via WhatsApp
-            </a>
-          </div>
-        </section>
+
 
         {/* Share Button */}
         <button
@@ -359,16 +362,24 @@ export default function Home() {
               });
             } else {
               navigator.clipboard.writeText(window.location.href);
-              alert('Link disalin ke clipboard!');
+              setToast('Link disalin ke clipboard!');
+              setTimeout(() => setToast(null), 3000);
             }
           }}
-          className="fixed bottom-6 left-6 z-50 bg-dark-luxury/20 backdrop-blur-sm text-dark-luxury px-4 py-3 rounded-full shadow-lg hover:bg-dark-luxury/30 transition-colors flex items-center gap-2"
+          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-dark-luxury/20 backdrop-blur-sm text-dark-luxury px-4 py-3 rounded-full shadow-lg hover:bg-dark-luxury/30 transition-colors flex items-center gap-2"
           aria-label="Bagikan"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
           </svg>
+          <span className="text-sm font-medium">Bagikan</span>
         </button>
+
+        {toast && (
+          <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-dark-luxury text-white px-6 py-3 rounded-full shadow-lg text-sm font-medium animate-fade-in">
+            {toast}
+          </div>
+        )}
 
         {/* Footer */}
         <footer className="py-8 text-center text-dark-luxury/40 text-sm">
