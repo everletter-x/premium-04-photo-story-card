@@ -1,26 +1,23 @@
 {
-  "recipient": "",
-  "sender": "",
-  "title": "",
-  "message": "",
-  "photos": [],
+  "recipient": "Sena",
+  "sender": "Aku",
+  "title": "Cerita Sena Dalam Satu Foto",
+  "message": "Setiap foto ini adalah bukti nyata bahwa cinta kita nyata, indah, dan layak untuk dikenang selamanya. Mari kita abadikan setiap momen bersama.",
+  "photos": [
+    "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=800",
+    "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=800",
+    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800",
+    "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=800"
+  ],
   "theme": "pink",
   "music": "",
   "musicTitle": "",
   "template": "premium-04",
-  "captions": [],
-  "closing": "",
-  "_example": {
-    "recipient": "Kamu",
-    "sender": "Aku",
-    "title": "Cerita Kita Dalam Satu Foto",
-    "message": "Setiap foto ini adalah bukti nyata bahwa cinta kita nyata, indah, dan layak untuk dikenang selamanya. Mari kita abadikan setiap momen bersama.",
-    "captions": [
-      "Saat pertama kali kita bertemu",
-      "Senyum yang mencuri hatiku",
-      "Tawa yang tak pernah terlupakan",
-      "Cinta yang abadi dalam setiap frame"
-    ],
-    "closing": "Setiap foto, setiap momen, setiap detik bersamamu adalah harta terindahku."
-  }
+  "captions": [
+    "Saat pertama kali kita bertemu",
+    "Senyum yang mencuri hatiku",
+    "Tawa yang tak pernah terlupakan",
+    "Cinta yang abadi dalam setiap frame"
+  ],
+  "closing": "Setiap foto, setiap momen, setiap detik bersamamu adalah harta terindahku, Sena."
 }
