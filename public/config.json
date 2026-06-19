@@ -1,23 +1,21 @@
 {
   "recipient": "Sena",
-  "sender": "Aku",
-  "title": "Cerita Sena Dalam Satu Foto",
-  "message": "Setiap foto ini adalah bukti nyata bahwa cinta kita nyata, indah, dan layak untuk dikenang selamanya.",
+  "sender": "Rey",
+  "title": "Setiap Frame Tentang Kita",
+  "message": "Kadang aku berpikir, bagaimana jadinya jika kita tidak pernah bertemu? Namun di setiap foto ini, aku menemukan jawaban mengapa takdir mempertemukan kita: untuk saling menyempurnakan.\n\nDi setiap frame yang kita abadikan bersama, tersimpan cerita yang tak bisa diungkapkan dengan kata-kata. Senyummu yang tulus, tawamu yang lepas, caramu menatapku seolah aku adalah satu-satunya orang di dunia — semua itu, aku simpan sebagai harta paling berharga dalam hidupku.\n\nAku percaya bahwa cinta sejati tidak selalu tentang momen-momen dramatis. Ia sering kali tersembunyi dalam hal-hal kecil — dalam caramu menggenggam tanganku saat kita berjalan, dalam cara kau memperhatikan detail kecil yang tak pernah orang lain sadari, dalam cara kau selalu ada saat aku membutuhkanmu.\n\nSetiap foto yang kita ambil adalah bukti bahwa kebahagiaan itu nyata. Bukan sekadar ilusi yang diciptakan oleh kamera, tapi refleksi dari perasaan tulus yang mengalir di antara kita. Dan aku berjanji, setiap momen yang akan kita abadikan di masa depan akan lebih indah dari yang pernah kita bayangkan.",
   "photos": [
-    "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=800&q=80",
-    "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=800&q=80",
-    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&q=80",
-    "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=800&q=80"
+    "demo-1.png",
+    "demo-2.png",
+    "demo-3.png"
   ],
   "theme": "pink",
   "music": "music/romantic-piano.mp3",
-  "musicTitle": "Romantic Piano",
+  "musicTitle": "Lagu Cinta Kita",
   "template": "premium-04",
   "captions": [
-    "Saat pertama kali kita bertemu",
-    "Senyum yang mencuri hatiku",
-    "Tawa yang tak pernah terlupakan",
-    "Cinta yang abadi dalam setiap frame"
+    "Senyum hangatmu yang selalu meredakan semua riuhnya duniaku.",
+    "Langkah kecil bersama, merajut mimpi sederhana di bawah langit senja.",
+    "Halaman baru yang kita tulis hari ini, berdua, selamanya."
   ],
-  "closing": "Setiap foto, setiap momen, setiap detik bersamamu adalah harta terindahku, Sena."
+  "closing": "Terima kasih sudah menjadi bagian terindah dari setiap lembaran hidupku, Sena. Setiap foto tentang kita adalah bukti bahwa cinta sejati itu ada, dan aku bersyukur telah menemukannya bersamamu."
 }
