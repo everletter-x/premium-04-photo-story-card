@@ -4,9 +4,10 @@
   "title": "Setiap Frame Tentang Kita",
   "message": "Kadang aku berpikir, bagaimana jadinya jika kita tidak pernah bertemu? Namun di setiap foto ini, aku menemukan jawaban mengapa takdir mempertemukan kita: untuk saling menyempurnakan.\n\nDi setiap frame yang kita abadikan bersama, tersimpan cerita yang tak bisa diungkapkan dengan kata-kata. Senyummu yang tulus, tawamu yang lepas, caramu menatapku seolah aku adalah satu-satunya orang di dunia — semua itu, aku simpan sebagai harta paling berharga dalam hidupku.\n\nAku percaya bahwa cinta sejati tidak selalu tentang momen-momen dramatis. Ia sering kali tersembunyi dalam hal-hal kecil — dalam caramu menggenggam tanganku saat kita berjalan, dalam cara kau memperhatikan detail kecil yang tak pernah orang lain sadari, dalam cara kau selalu ada saat aku membutuhkanmu.\n\nSetiap foto yang kita ambil adalah bukti bahwa kebahagiaan itu nyata. Bukan sekadar ilusi yang diciptakan oleh kamera, tapi refleksi dari perasaan tulus yang mengalir di antara kita. Dan aku berjanji, setiap momen yang akan kita abadikan di masa depan akan lebih indah dari yang pernah kita bayangkan.",
   "photos": [
-    "demo-1.png",
-    "demo-2.png",
-    "demo-3.png"
+    "photo-1.jpg",
+    "photo-2.jpg",
+    "photo-3.jpg",
+    "photo-4.jpg"
   ],
   "theme": "pink",
   "music": "music/romantic-piano.mp3",
@@ -15,7 +16,8 @@
   "captions": [
     "Senyum hangatmu yang selalu meredakan semua riuhnya duniaku.",
     "Langkah kecil bersama, merajut mimpi sederhana di bawah langit senja.",
-    "Halaman baru yang kita tulis hari ini, berdua, selamanya."
+    "Halaman baru yang kita tulis hari ini, berdua, selamanya.",
+    "Setiap detak jantungku adalah pengingat betapa beruntungnya aku memilikimu."
   ],
   "closing": "Terima kasih sudah menjadi bagian terindah dari setiap lembaran hidupku, Sena. Setiap foto tentang kita adalah bukti bahwa cinta sejati itu ada, dan aku bersyukur telah menemukannya bersamamu."
 }

@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import Head from 'next/head';
 import { useConfigLoader } from '../shared';
+import { RippleEffect } from '../components/RippleEffect';
 
 interface Config {
   recipient: string;
@@ -46,6 +47,89 @@ const themeColors: Record<string, { bg: string; cardBg: string; text: string; ac
     glow: 'from-[#E6C29E]/20 to-transparent',
   },
 };
+
+/* ── Shooting Stars ── */
+function ShootingStars({ color }: { color: string }) {
+  const stars = useMemo(() =>
+    [...Array(3)].map((_, i) => ({
+      id: i,
+      x: Math.random() * 100,
+      y: Math.random() * 40,
+      duration: 1.5 + Math.random() * 2,
+      delay: i * 3 + Math.random() * 4,
+      angle: -25 + Math.random() * 10,
+      length: 60 + Math.random() * 80,
+    })), []);
+
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+      {stars.map((s) => (
+        <motion.div
+          key={s.id}
+          className="absolute"
+          style={{ left: `${s.x}%`, top: `${s.y}%` }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: [0, 1, 1, 0] }}
+          transition={{ duration: s.duration * 2, repeat: Infinity, delay: s.delay, ease: "easeInOut" }}
+        >
+          <motion.div
+            className="absolute"
+            style={{ transform: `rotate(${s.angle}deg)`, transformOrigin: "left center" }}
+            animate={{ x: [0, s.length] }}
+            transition={{ duration: s.duration, repeat: Infinity, delay: s.delay, ease: "easeOut" }}
+          >
+            {/* Star head */}
+            <div
+              className="absolute w-1.5 h-1.5 rounded-full"
+              style={{ backgroundColor: color, boxShadow: `0 0 6px ${color}` }}
+            />
+            {/* Trail */}
+            <div
+              className="absolute top-0.5 right-1.5 h-[1px]"
+              style={{
+                width: s.length,
+                background: `linear-gradient(90deg, ${color}00, ${color}40, ${color}20, transparent)`,
+              }}
+            />
+          </motion.div>
+        </motion.div>
+      ))}
+    </div>
+  );
+}
+
+/* ── Flip Card ── */
+function FlipCard({ front, back, isFlipped, onFlip }: { front: React.ReactNode; back: React.ReactNode; isFlipped: boolean; onFlip: () => void }) {
+  return (
+    <div
+      className="relative w-full h-full cursor-pointer"
+      style={{ perspective: "1200px" }}
+      onClick={onFlip}
+    >
+      <motion.div
+        className="relative w-full h-full"
+        animate={{ rotateY: isFlipped ? 180 : 0 }}
+        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+        style={{ transformStyle: "preserve-3d" }}
+      >
+        {/* Front */}
+        <div
+          className="absolute inset-0"
+          style={{ backfaceVisibility: "hidden" }}
+        >
+          {front}
+        </div>
+        {/* Back */}
+        <div
+          className="absolute inset-0"
+          style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
+        >
+          {back}
+        </div>
+      </motion.div>
+    </div>
+  );
+}
 
 /* ── Cosmic Particles (unique to Heartverse) ── */
 function CosmicParticles({ color }: { color: string }) {
@@ -130,6 +214,7 @@ export default function Home() {
   const { config, loading, error } = useConfigLoader<Config>('/config.json');
   const [currentPhoto, setCurrentPhoto] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [flipped, setFlipped] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [toast, setToast] = useState<string | null>(null);
 
@@ -205,6 +290,7 @@ export default function Home() {
       </Head>
 
       <div className={`min-h-screen ${colors.bg} ${colors.text} font-sans selection:bg-white/20 overflow-x-hidden relative`}>
+        <RippleEffect color={`${colors.accentHex}15`} />
         {/* Ambient glow */}
         <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full opacity-10 blur-[140px] pointer-events-none"
           style={{ background: `radial-gradient(circle, ${colors.accentHex}, transparent)` }} />
@@ -213,6 +299,7 @@ export default function Home() {
 
         {/* ═══ Intro Section ═══ */}
         <section className="min-h-[110vh] flex flex-col items-center justify-center px-6 relative z-10">
+          <ShootingStars color={colors.accentHex} />
           <CosmicParticles color={colors.accentHex} />
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }} className="text-center max-w-3xl mx-auto">
@@ -228,6 +315,7 @@ export default function Home() {
 
         {/* ═══ Emotional Depth Section ═══ */}
         <section className="min-h-screen py-32 px-6 relative z-10">
+          <ShootingStars color={colors.accentHex} />
           <CosmicParticles color={colors.accentHex} />
           <ParallaxSection speed={0.1} className="max-w-2xl mx-auto">
             <motion.div
@@ -288,29 +376,57 @@ export default function Home() {
               </div>
 
               <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-center">
-                {/* Photo Display */}
+                {/* Photo Display with 3D Flip */}
                 <div className="w-full lg:w-1/2">
-                  <div className="relative aspect-[4/5] md:aspect-[3/2] lg:aspect-[4/5] bg-white/[0.02] border border-white/[0.05] p-3 rounded-[16px] shadow-2xl group overflow-hidden">
-                    <AnimatePresence mode="wait">
-                      <motion.div key={currentPhoto}
-                        initial={{ opacity: 0, scale: 0.96 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 1.04 }}
-                        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                        className="w-full h-full relative overflow-hidden rounded-[10px] bg-black/40">
-                        {config.photos[currentPhoto] && (
-                          <img src={`/${config.photos[currentPhoto]}`} alt={`Photo ${currentPhoto + 1}`} className="w-full h-full object-cover" />
-                        )}
-                      </motion.div>
-                    </AnimatePresence>
-                    <div className="absolute inset-0 flex items-center justify-between p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <button onClick={prevPhoto} className="w-10 h-10 bg-black/40 hover:bg-black/60 backdrop-blur-md rounded-full flex items-center justify-center border border-white/10 text-white transition-colors cursor-pointer">
-                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-                      </button>
-                      <button onClick={nextPhoto} className="w-10 h-10 bg-black/40 hover:bg-black/60 backdrop-blur-md rounded-full flex items-center justify-center border border-white/10 text-white transition-colors cursor-pointer">
-                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-                      </button>
-                    </div>
+                  <div className="relative aspect-[4/5] md:aspect-[3/2] lg:aspect-[4/5] bg-white/[0.02] border border-white/[0.05] p-3 rounded-[16px] shadow-2xl">
+                    <FlipCard
+                      isFlipped={flipped}
+                      onFlip={() => setFlipped(prev => !prev)}
+                      front={
+                        <div className="relative w-full h-full group">
+                          <AnimatePresence mode="wait">
+                            <motion.div key={currentPhoto}
+                              initial={{ opacity: 0, scale: 0.96 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              exit={{ opacity: 0, scale: 1.04 }}
+                              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                              className="w-full h-full relative overflow-hidden rounded-[10px] bg-black/40">
+                              {config.photos[currentPhoto] && (
+                                <motion.div
+                                  animate={{ scale: [1, 1.08, 1] }}
+                                  transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
+                                  className="w-full h-full"
+                                  style={{ willChange: 'transform' }}
+                                >
+                                  <img src={`/${config.photos[currentPhoto]}`} alt={`Photo ${currentPhoto + 1}`} className="w-full h-full object-cover" />
+                                </motion.div>
+                              )}
+                            </motion.div>
+                          </AnimatePresence>
+                          <div className="absolute inset-0 flex items-center justify-between p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                            <button onClick={(e) => { e.stopPropagation(); prevPhoto(); }} className="w-10 h-10 bg-black/40 hover:bg-black/60 backdrop-blur-md rounded-full flex items-center justify-center border border-white/10 text-white transition-colors cursor-pointer pointer-events-auto">
+                              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                            </button>
+                            <button onClick={(e) => { e.stopPropagation(); nextPhoto(); }} className="w-10 h-10 bg-black/40 hover:bg-black/60 backdrop-blur-md rounded-full flex items-center justify-center border border-white/10 text-white transition-colors cursor-pointer pointer-events-auto">
+                              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                            </button>
+                          </div>
+                        </div>
+                      }
+                      back={
+                        <div className="w-full h-full rounded-[10px] bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/[0.1] flex flex-col items-center justify-center p-8 text-center">
+                          <svg className="w-8 h-8 mb-4" style={{ color: colors.accentHex }} fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                          </svg>
+                          <p className="font-display-premium text-lg md:text-xl font-light italic leading-relaxed text-white/80">
+                            &ldquo;{config.captions[currentPhoto] || 'Sebuah Kenangan'}&rdquo;
+                          </p>
+                          <div className="mt-6 text-[10px] tracking-[0.3em] uppercase text-white/30">
+                            Ketuk untuk kembali
+                          </div>
+                        </div>
+                      }
+                    />
                   </div>
                 </div>
 
